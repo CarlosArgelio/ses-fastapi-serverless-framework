@@ -22,12 +22,12 @@ package:
     - "!**"
 
 plugins:
+  - serverless-pydeps
   - serverless-offline
-
 
 functions:
   send_email:
-    handler: src/email/handler.send_email
+    handler: main.handler
     # timeout: 30
     name: ${opt:stage}-post-send-email
     package:
@@ -36,13 +36,14 @@ functions:
         - "routers/emailRouters.py"
         - "models/emailModels.py"
         - "services/emailsServices.py"
+        - ".env"
     events:
       - http:
           path: /api/v1/send-email-for-user
           method: post
           request:
             schemas:
-              application/json: ${file(src/model/post_email.json)}
+              application/json: ${file(jsonSchemas/schemas/inbox.json)}
           cors:
             origin: '*'
             headers:
