@@ -24,7 +24,7 @@ class ApiSES:
     def send_email(self):
 
         try:
-            data = json.dumps(self.body.json())
+            data = json.dumps(dict(self.body))
 
             send_email_template = self.client.send_templated_email(
                 Source='palaciosrcarlosa2@gmail.com',
