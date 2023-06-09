@@ -6,7 +6,7 @@ import json
 from dotenv import load_dotenv
 
 # services
-from services.emailsServices import inbox_schema
+from models.emailModels import inbox_schema
 
 load_dotenv()
 

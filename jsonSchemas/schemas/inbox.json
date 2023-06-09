@@ -1,0 +1,31 @@
+{
+    "title": "Inbox",
+    "type": "object",
+    "properties": {
+        "id": {
+            "title": "Id",
+            "default": "981704d2-11b4-442f-a695-7661c3e3cadf",
+            "type": "string"
+        },
+        "name": {
+            "title": "Name",
+            "type": "string"
+        },
+        "email": {
+            "title": "Email",
+            "type": "string",
+            "format": "email"
+        },
+        "number_phone": {
+            "title": "Number Phone",
+            "type": "string"
+        }
+    },
+    "required": [
+        "name",
+        "email",
+        "number_phone"
+    ],
+    "additionalProperties": false,
+    "$schema": "http://json-schema.org/draft-04/schema#"
+}
