@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Unsubscribe</title>
-  <style>
+  <!-- <style>
     /* Estilos CSS */
     body {
       font-family: Arial, sans-serif;
@@ -40,23 +40,27 @@
       margin-top: 20px;
       color: #999;
     }
-  </style>
+  </style> -->
 </head>
 <body>
   <div class="container">
     <h1>Unsubscribe</h1>
     <ul>
       <li>
+        <label for="id">id:</label>
+        <span id="id">{{id}}</span>
+      </li>
+      <li>
         <label for="name">Nombre:</label>
-        <span id="name">Juan Pérez</span>
+        <span id="name">{{name}}</span>
       </li>
       <li>
         <label for="phone">Teléfono:</label>
-        <span id="phone">555-1234</span>
+        <span id="phone">{{number_phone}}</span>
       </li>
       <li>
         <label for="email">Correo electrónico:</label>
-        <span id="email">juan@example.com</span>
+        <span id="email">{{email}}</span>
       </li>
       <li>
         <button>Unsubscribe</button>
@@ -64,9 +68,5 @@
     </ul>
     <p class="user-agent">User-Agent: <span id="user-agent"></span></p>
   </div>
-  <script>
-    // Script para obtener el User-Agent del usuario
-    document.getElementById("user-agent").textContent = navigator.userAgent;
-  </script>
 </body>
 </html>
