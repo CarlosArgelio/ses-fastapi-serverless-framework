@@ -8,14 +8,12 @@ from fastapi.responses import JSONResponse
 from fastapi import HTTPException
 
 # services
-from services.emailsServices import Inbox
+from services.emailsServices import ApiSES
 
 # models
-from models.emailModels import ApiSES
+from models.emailModels import Inbox
 
 emailRouter = APIRouter()
-
-emails = []
 
 @emailRouter.post(
     path='/api/v1/send-email-for-user',
@@ -64,7 +62,6 @@ def post_send_email_for_user(inbox: Inbox) -> dict:
             detail=response
         )
     else:
-        item['MessageId'] = ses['response']
-        emails.append(item)
+        resp_ses = ses['response']
     
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "success", "data": item})
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "success", "data": item, "response": resp_ses})

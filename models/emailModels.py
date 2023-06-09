@@ -1,41 +1,28 @@
-# python
-import os
-import json
+# Python
+from typing import Optional
+from uuid import uuid4
+import re
 
-# boto3
-import boto3
-from botocore.exceptions import ClientError
+# Pydantic
+from pydantic import BaseModel, validator
+from pydantic import Extra
+from pydantic import Field
+from pydantic import EmailStr
 
-# DotEnv
-from dotenv import load_dotenv
 
-load_dotenv()
+class Inbox(BaseModel):
+    id: Optional[str] = uuid4()
+    name: str
+    email: EmailStr
+    number_phone: str
 
-SOURCE = os.environ['SOURCE']
-TEMPLATE_NAME = os.environ['TEMPLATE_NAME']
+    @validator('number_phone')
+    def validate_number_phone(cls, value):
+        if not re.match(r'^\d{3}\d{7}$', value):
+            raise ValueError('number_phone must be in the format "XXX-XXXXXXX"')
+        return value
+    
+    class Config:
+        extra = Extra.forbid
 
-ses = boto3.client('ses')
-
-class ApiSES:
-    def __init__(self, body):
-        self.client = ses
-        self.body = body
-
-    def send_email(self):
-
-        try:
-            data = json.dumps(self.body.json())
-
-            send_email_template = ses.send_templated_email(
-                Source      =   SOURCE,
-                Destination =   {'ToAddresses': [SOURCE]},
-                Template    =   TEMPLATE_NAME,
-                TemplateData=   data
-            )
-
-            response = {'status': True, 'response': json.dumps(send_email_template, indent=4, sort_keys=True, default=str)}
-        except ClientError as err:
-            message = err.response['Error']['Message']
-            response = {'status': False, 'response': message}
-        
-        return response
+inbox_schema = Inbox.schema()

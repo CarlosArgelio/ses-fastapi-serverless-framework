@@ -1,29 +1,41 @@
-# Python
-from typing import Optional
-from uuid import uuid4
-import re
+# python
+import os
+import json
 
-# Pydantic
-from pydantic import BaseModel, validator
-from pydantic import Extra
-from pydantic import Field
-from pydantic import EmailStr
+# boto3
+import boto3
+from botocore.exceptions import ClientError
 
+# DotEnv
+from dotenv import load_dotenv
 
-class Inbox(BaseModel):
-    id: Optional[str] = uuid4()
-    name: str
-    email: EmailStr
-    number_phone: str
+load_dotenv()
 
-    @validator('number_phone')
-    def validate_number_phone(cls, value):
-        if not re.match(r'^\d{3}\d{7}$', value):
-            raise ValueError('number_phone must be in the format "XXX-XXXXXXX"')
-        return value
-    
-    class Config:
-        extra = Extra.forbid
+SOURCE = os.getenv('SOURCE')
+TEMPLATE_NAME = os.getenv('TEMPLATE_NAME')
 
-inbox_schema = Inbox.schema()
-print(inbox_schema)
+ses = boto3.client('ses')
+
+class ApiSES:
+    def __init__(self, body):
+        self.client = ses
+        self.body = body
+
+    def send_email(self):
+
+        try:
+            data = json.dumps(self.body.json())
+
+            send_email_template = self.client.send_templated_email(
+                Source='palaciosrcarlosa2@gmail.com',
+                Destination={'ToAddresses': ['palaciosrcarlosa2@gmail.com']},
+                Template=TEMPLATE_NAME,
+                TemplateData=data
+            )
+            print(send_email_template)
+            response = {'status': True, 'response': send_email_template}
+        except ClientError as err:
+            message = err.response['Error']['Message']
+            response = {'status': False, 'response': message}
+        
+        return response
