@@ -1,0 +1,22 @@
+{
+  "name": "woaka",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test",
+    "lint": "gulp lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-server-livereload": "^1.9.2",
+    "serverless": "^3.32.2"
+  },
+  "devDependencies": {
+    "child_process": "^1.0.2",
+    "gulp-pylint": "^0.0.3"
+  }
+}

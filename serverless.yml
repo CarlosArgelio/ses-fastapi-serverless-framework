@@ -1,0 +1,71 @@
+service: wooka-services
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: dev
+  region: us-east-1
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'ses:SendTemplatedEmail'
+          Resource: '*'
+  environment:
+    destination: soporte@gurusaws.com
+
+package:
+  individually: True
+  patterns:
+    - "!*/**"
+    - "!**"
+    - "src/template/it_consultation.html"
+
+plugins:
+  - serverless-openapi-documenter
+  - serverless-offline
+
+custom:
+  documentation: ${file(serverless.doc.yml):documentation}
+
+functions:
+  send_email:
+    handler: src/email/handler.send_email
+    # timeout: 30
+    name: send-email
+    description: Send email with template SES 'Order_a_free_IT_consultation'
+    package:
+      patterns:
+        - "src/email/handler.py"
+    events:
+      - http:
+          path: send-email-to-admin
+          method: post
+          request:
+            schemas:
+              application/json: ${file(src/model/post_email.json)}
+          documentation: ${file(serverless.doc.yml):endpoints.send_email}
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+
+resources:
+  Resources:
+    template:
+      Type: AWS::SES::Template
+      Properties:
+        Template:
+          HtmlPart: ${file(src/template/it_consultation.html)}
+          SubjectPart: Order a free IT consultarion
+          TemplateName: Order_a_free_IT_consultation
+    EmailIdentity2:
+      Type: AWS::SES::EmailIdentity
+      Properties:
+        EmailIdentity: ${self:provider.environment.destination}  
